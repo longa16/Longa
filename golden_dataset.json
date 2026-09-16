@@ -1,0 +1,87 @@
+{
+  "_comment": "Golden dataset pour l'évaluation du RAG.",
+  "_source_documents": [
+    "data/"
+  ],
+  "examples": [
+    {
+      "id": "q001",
+      "type": "factuelle_simple",
+      "question": "Qui es-tu ?",
+      "ground_truth": "Je suis Longa, assistant de Loic Ngassa.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q002",
+      "type": "factuelle_simple",
+      "question": "Qui est Loic Ngassa ?",
+      "ground_truth": "Jeune diplômé à la recherche d'un CDI dans les domaines de l'IA, data science et machine learning.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q003",
+      "type": "synthese_multi_passages",
+      "question": "Résume le parcours academique de Loic ngassa",
+      "ground_truth": "Une classe préparatoire à l'Université Catholique de Douala, et ensuite un cycle ingénieur à l'INSA Hauts-de-France.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q004",
+      "type": "numerique",
+      "question": "En quelle année a-t-il été diplômé ?",
+      "ground_truth": "Il est diplômé en 2026.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q005",
+      "type": "absence_information",
+      "question": "Combien de frères a Loic Ngassa ?",
+      "ground_truth": "Le document ne mentionne pas le nombre de frères de Loic Ngassa.",
+      "expected_source_page": null,
+      "note": "Teste que le système dit honnêtement qu'il ne sait pas, plutôt que d'halluciner."
+    },
+    {
+      "id": "q006",
+      "type": "factuelle_multiple",
+      "question": "Quelles sont les compétences techniques (langages, outils, frameworks) maîtrisées par Loïc ?",
+      "ground_truth": "Loïc maîtrise des technologies liées à la Data Science et à l'IA telles que Python, les bases de données (SQL), et les différents algorithmes/frameworks de Machine Learning et Deep Learning listés sur son CV.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q007",
+      "type": "synthese_rapport",
+      "question": "Quel a été le thème ou les principales réalisations de son Projet de Fin d'Études (PFE) ?",
+      "ground_truth": "Le Projet de Fin d'Études (détaillé dans son rapport de PFE) a consisté à concevoir, entraîner et valider des modèles de Machine Learning/Data Science pour résoudre une problématique métier précise, de bout en bout.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q008",
+      "type": "analyse_motivation",
+      "question": "Pourquoi Loïc souhaite-t-il travailler dans le domaine de la Data Science et de l'IA ?",
+      "ground_truth": "Comme expliqué dans sa lettre de motivation, Loïc a une forte appétence pour l'exploitation de la donnée et l'intelligence artificielle, domaines dans lesquels il a forgé ses compétences d'ingénieur durant tout son cursus.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q009",
+      "type": "absence_information",
+      "question": "Quelles sont les prétentions salariales de Loïc pour un éventuel CDI ?",
+      "ground_truth": "Aucune information concernant ses prétentions salariales n'est mentionnée dans les documents fournis.",
+      "expected_source_page": null,
+      "note": "Vérifie que Llama 3 n'invente pas un salaire type."
+    },
+    {
+      "id": "q010",
+      "type": "transversale",
+      "question": "Quelles ont été ses précédentes expériences professionnelles (stages inclus) ?",
+      "ground_truth": "Le candidat a effectué des stages formateurs notamment son stage de PFE, où il a directement mis en application ses compétences de développement technique pour résoudre des besoins concrets.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q011",
+      "type": "scenario_recrutement",
+      "question": "En quoi le profil de Loïc correspond-il exactement à ce qu'une entreprise Tech recherche aujourd'hui ?",
+      "ground_truth": "Loïc possède à la fois un bagage théorique solide (cycle ingénieur INSA) et une pratique avancée des algorithmes d'IA (visible dans son rapport PFE). Il est taillé pour affronter les enjeux métiers nécessitant rigueur, curiosité technique et flexibilité.",
+      "expected_source_page": null
+    }
+  ]
+}
