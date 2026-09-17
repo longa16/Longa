@@ -2,7 +2,9 @@ import streamlit as st
 from src.backend import load_rag_chain
 
 def render():
-    st.title("RAG sur PDF — Assistant Local")
+    st.title("Mon agent assistant")
+    st.subheader("Repond à toutes les questions que se posent les recruteurs sur moi")
+
 
     # Initialisation de l'historique de chat
     if "messages" not in st.session_state:
