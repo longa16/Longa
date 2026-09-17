@@ -1,12 +1,6 @@
-# RAGE — RAG-based Assistant for Graduate Employment
+# Longa RAG-based Assistant for Graduate Employment
 
-> **Longa** — Assistant IA de Loïc NGASSA, conçu pour répondre aux questions des recruteurs à partir de ses documents personnels.
-
----
-
-## Présentation
-
-**RAGE** est un chatbot RAG modulaire. Il exploite une base de données vectorielle FAISS construite à partir des documents PDF de Loïc NGASSA, et génère des réponses précises via le LLM **Llama 3.1 8B Instruct** hébergé sur HuggingFace.
+> **Longa** est l'assistant IA de Loïc NGASSA, conçu pour répondre aux questions des recruteurs à partir de ses documents personnels. Il exploite une base de données vectorielle FAISS construite à partir des documents PDF de Loïc NGASSA, et génère des réponses précises via le LLM **Llama 3.1 8B Instruct** hébergé sur HuggingFace.
 
 ---
 
