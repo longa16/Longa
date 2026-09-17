@@ -33,10 +33,10 @@ def ingest():
     print(f"{len(chunks)} fragments créés. Initialisation du réseau d'embedding sur le CPU...")
     embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
     
-    print("Vectorisation et création de la base de données FAISS (peut prendre du temps)...")
+    print("Vectorisation et création de la base de données FAISS...")
     db = FAISS.from_documents(chunks, embeddings)
     db.save_local(FAISS_INDEX)
-    print(f"\n✅ Succès ! La base de données a été sauvegardée dans '{FAISS_INDEX}'.")
+    print(f"\n Succès ! La base de données a été sauvegardée dans '{FAISS_INDEX}'.")
 
 if __name__ == "__main__":
     ingest()

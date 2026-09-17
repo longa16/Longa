@@ -2,7 +2,7 @@ import streamlit as st
 from src.backend import load_rag_chain
 
 def render():
-    st.title("Mon agent assistant")
+    st.title("Mon agent assistant, Longa")
     st.subheader("Repond à toutes les questions que se posent les recruteurs sur moi")
 
 
@@ -10,7 +10,7 @@ def render():
     if "messages" not in st.session_state:
         st.session_state.messages = []
 
-    # Chargement unique de la chaîne et de la BDD (qui doit déjà exister via ingest.py)
+    # Chargement unique de la chaîne et de la BDD
     if "chain" not in st.session_state:
         with st.spinner("Chargement de la base de connaissances..."):
             try:
@@ -30,7 +30,7 @@ def render():
                         st.write(src)
 
     # --- Zone de question ---
-    question = st.chat_input("Posez votre question sur la documentation de l'entreprise :")
+    question = st.chat_input("Posez votre question à l'agent sur Loic ngassa :")
 
     if question:
         # Message utilisateur
@@ -40,7 +40,7 @@ def render():
 
         # Réponse assistant
         with st.chat_message("assistant"):
-            with st.spinner("Recherche dans les documents en cours..."):
+            with st.spinner("patientez quelques secondes..."):
                 try:
                     result = st.session_state.chain.invoke({"query": question})
                     rep = result["result"]

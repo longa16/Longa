@@ -1,5 +1,5 @@
 """
-Pipeline d'évaluation pour RAGE (RAG QA sur PDF).
+Pipeline d'évaluation pour RAGE.
 
 Ce script :
 1. Charge le golden dataset
@@ -11,8 +11,8 @@ Ce script :
 
 import argparse
 import json
-import os
 import sys
+import os
 from dataclasses import dataclass, field
 from datetime import datetime
 from pathlib import Path
@@ -23,11 +23,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-# ---------------------------------------------------------------------------
-# 1. Chargement de la chaîne RAG (refactor de la logique de app.py)
-# ---------------------------------------------------------------------------
-
-def load_rag_chain(faiss_index_path: str, k: int = 3, repo_id: str = "mistralai/Mistral-7B-Instruct-v0.2"):
+#Chargement de la chaîne RAG
+def load_rag_chain(faiss_index_path: str, k: int = 3, repo_id: str = "meta-llama/Llama-3.1-8B-Instruct"):
     """Recharge la chaîne RAG à partir d'un index FAISS déjà construit.
 
     Séparé de la construction de l'index pour pouvoir évaluer sans
@@ -38,39 +35,78 @@ def load_rag_chain(faiss_index_path: str, k: int = 3, repo_id: str = "mistralai/
     from langchain_core.prompts import PromptTemplate
     from langchain_classic.chains import RetrievalQA
 
-    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
+    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
     db = FAISS.load_local(faiss_index_path, embeddings, allow_dangerous_deserialization=True)
 
     hf_token = os.getenv("HUGGINGFACEHUB_API_TOKEN")
+
     llm = HuggingFaceEndpoint(
-        repo_id=repo_id,
+        repo_id="meta-llama/Llama-3.1-8B-Instruct",
+        provider="featherless-ai",
         task="conversational",
         huggingfacehub_api_token=hf_token,
-        temperature=0.1,
+        temperature=0.2,
+        max_new_tokens=512,
     )
     chat_llm = ChatHuggingFace(llm=llm)
 
-    prompt_template = """<s>[INST] Utilise le contexte suivant pour répondre à la question. Si tu ne sais pas, dis-le simplement.
+    prompt_template = """Tu es Longa, l'assistant professionnel de Loïc NGASSA.
+Ta mission est de répondre aux questions de recruteurs concernant
+le parcours, les compétences, les expériences, les projets,
+la formation et les réalisations de Loïc NGASSA.
+
+RÈGLE PRINCIPALE :
+Tu dois répondre uniquement à partir des informations présentes
+dans le contexte documentaire fourni.
+Tu ne dois jamais inventer, supposer, extrapoler ou déduire une
+information personnelle concernant Loïc NGASSA.
+Si une information n'est pas présente dans le contexte fourni,
+dis-le explicitement.
+
+N'utilise jamais des formulations telles que :
+- "probablement"
+- "on peut supposer"
+- "il semble"
+- "cela suggère"
+- "il a probablement"
+
+pour compléter une information absente.
+Si la question porte sur une information absente des documents,
+réponds :
+"Je ne dispose pas de cette information dans les documents qui
+m'ont été fournis et je préfère ne pas spéculer."
+
+Lorsque plusieurs informations pertinentes sont disponibles,
+synthétise-les clairement sans ajouter d'informations externes.
+
+Pour les compétences, distingue :
+- compétences explicitement mentionnées ;
+- technologies explicitement utilisées ;
+- expériences/projets ayant permis de développer ces compétences.
+
+Ne transforme pas automatiquement une expérience en compétence
+maîtrisée.
+Lorsque c'est pertinent, indique le projet ou l'expérience
+à l'origine de l'information.
+Tu dois toujours privilégier la précision à la quantité.
+Tu réponds en français sauf si le recruteur utilise une autre langue..
 
 Contexte : {context}
 
-Question : {question} [/INST]</s>"""
+Question : {question}"""
     prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
 
     qa_chain = RetrievalQA.from_chain_type(
         llm=chat_llm,
         chain_type="stuff",
-        retriever=db.as_retriever(search_kwargs={"k": k}),
+        retriever=db.as_retriever(search_type="mmr", search_kwargs={"k": 4, "fetch_k": 6}),
         return_source_documents=True,
         chain_type_kwargs={"prompt": prompt},
     )
     return qa_chain
 
 
-# ---------------------------------------------------------------------------
-# 2. Exécution du golden dataset à travers la chaîne
-# ---------------------------------------------------------------------------
-
+#Exécution du golden dataset à travers la chaîne
 @dataclass
 class EvalRow:
     question_id: str
@@ -87,7 +123,7 @@ def run_dataset(chain, dataset_path: str) -> list[EvalRow]:
 
     rows: list[EvalRow] = []
     examples = data["examples"]
-    print(f"Exécution de {len(examples)} questions sur la chaîne RAG...")
+    print(f"Exécution de {len(examples)} questions sur le pipeline...")
 
     for i, ex in enumerate(examples, 1):
         row = EvalRow(
@@ -109,14 +145,13 @@ def run_dataset(chain, dataset_path: str) -> list[EvalRow]:
     return rows
 
 
-# ---------------------------------------------------------------------------
+
 # 3. Évaluation RAGAS
-# ---------------------------------------------------------------------------
 
 def evaluate_with_ragas(rows: list[EvalRow]) -> pd.DataFrame:
     """Calcule faithfulness, answer_relevancy, context_precision, context_recall.
 
-    faithfulness        : la réponse est-elle fidèle au contexte récupéré (pas d'hallucination) ?
+    faithfulness        : la réponse est-elle fidèle au contexte récupéré ?
     answer_relevancy     : la réponse répond-elle vraiment à la question posée ?
     context_precision    : les passages récupérés sont-ils pertinents (peu de bruit) ?
     context_recall       : le contexte récupéré couvre-t-il ce qu'il faut pour répondre ?
@@ -124,6 +159,28 @@ def evaluate_with_ragas(rows: list[EvalRow]) -> pd.DataFrame:
     from datasets import Dataset
     from ragas import evaluate
     from ragas.metrics import faithfulness, answer_relevancy, context_precision, context_recall
+    from langchain_huggingface import HuggingFaceEndpoint, ChatHuggingFace, HuggingFaceEmbeddings
+    from ragas.llms import LangchainLLMWrapper
+    from ragas.embeddings import LangchainEmbeddingsWrapper
+
+    hf_token = os.getenv("HUGGINGFACEHUB_API_TOKEN")
+
+    # LLM juge : même modèle que l'app principale
+    judge_llm = HuggingFaceEndpoint(
+        repo_id="meta-llama/Llama-3.1-8B-Instruct",
+        provider="featherless-ai",
+        task="conversational",
+        huggingfacehub_api_token=hf_token,
+        temperature=0.0,
+        max_new_tokens=512,
+    )
+    judge_chat = ChatHuggingFace(llm=judge_llm)
+    ragas_llm = LangchainLLMWrapper(judge_chat)
+
+    # Embeddings juge : même modèle que l'index FAISS
+    ragas_embeddings = LangchainEmbeddingsWrapper(
+        HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
+    )
 
     eval_data = {
         "question": [r.question for r in rows],
@@ -136,16 +193,16 @@ def evaluate_with_ragas(rows: list[EvalRow]) -> pd.DataFrame:
     result = evaluate(
         ds,
         metrics=[faithfulness, answer_relevancy, context_precision, context_recall],
+        llm=ragas_llm,
+        embeddings=ragas_embeddings,
     )
     df = result.to_pandas()
     df.insert(0, "question_id", [r.question_id for r in rows])
     return df
 
 
-# ---------------------------------------------------------------------------
-# 4. Rapport
-# ---------------------------------------------------------------------------
 
+# Rapport
 def save_report(df: pd.DataFrame, output_dir: str, run_label: str = ""):
     Path(output_dir).mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -176,10 +233,7 @@ def save_report(df: pd.DataFrame, output_dir: str, run_label: str = ""):
     return summary
 
 
-# ---------------------------------------------------------------------------
 # main
-# ---------------------------------------------------------------------------
-
 def main():
     parser = argparse.ArgumentParser(description="Évalue le pipeline RAG avec RAGAS")
     parser.add_argument("--dataset", default="golden_dataset.json")

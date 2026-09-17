@@ -1,0 +1,9 @@
+{
+    "faithfulness": 0.8091,
+    "answer_relevancy": 0.8255,
+    "context_precision": 0.6727,
+    "context_recall": 0.7591,
+    "n_questions": 11,
+    "run_label": "default",
+    "timestamp": "20260917_150019"
+}
