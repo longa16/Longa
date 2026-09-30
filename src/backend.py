@@ -2,9 +2,8 @@ import os
 import warnings
 warnings.filterwarnings("ignore", message=".*langchain-community.*", category=DeprecationWarning)
 
-from langchain_community.document_loaders import PyPDFLoader
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_huggingface import HuggingFaceEmbeddings, HuggingFaceEndpoint, ChatHuggingFace
+from langchain_huggingface import HuggingFaceEmbeddings
+from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
 from langchain_community.vectorstores import FAISS
 from langchain_classic.chains import RetrievalQA
@@ -12,12 +11,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-HF_TOKEN = os.getenv("HUGGINGFACEHUB_API_TOKEN")
+GROQ_API_KEY = os.getenv("GROQ_API_KEY")
 
 EMBEDDING_MODEL = "sentence-transformers/all-mpnet-base-v2"
-LLM_REPO_ID    = "meta-llama/Llama-3.1-8B-Instruct"
-FAISS_INDEX    = "faiss_index"
-
+LLM_MODEL       = "openai/gpt-oss-120b"
+GROQ_BASE_URL   = "https://api.groq.com/openai/v1"
+FAISS_INDEX     = "faiss_index"
 
 
 import streamlit as st
@@ -30,20 +29,22 @@ def get_embeddings_model():
 
 def load_rag_chain():
     """Charge l'index FAISS et construit la chaîne RAG."""
-    print(f"Chargement du modèle : {LLM_REPO_ID}")
+    if not GROQ_API_KEY:
+        raise RuntimeError("GROQ_API_KEY manquante dans le .env")
+
+    print(f"Chargement du modèle : {LLM_MODEL}")
 
     embeddings = get_embeddings_model()
     db = FAISS.load_local(FAISS_INDEX, embeddings, allow_dangerous_deserialization=True)
 
-    llm = HuggingFaceEndpoint(
-        repo_id=LLM_REPO_ID,
-        provider="featherless-ai",
-        task="conversational",
-        huggingfacehub_api_token=HF_TOKEN,
+    chat_llm = ChatOpenAI(
+        model=LLM_MODEL,
+        base_url=GROQ_BASE_URL,
+        api_key=GROQ_API_KEY,
         temperature=0.2,
-        max_new_tokens=512,
+        max_tokens=1024,
+        max_retries=3,
     )
-    chat_llm = ChatHuggingFace(llm=llm)
 
     prompt_template = """Tu es Longa, l'assistant professionnel de Loïc NGASSA.
 Ta mission est de répondre aux questions de recruteurs concernant

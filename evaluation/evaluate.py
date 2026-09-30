@@ -1,5 +1,5 @@
 """
-Pipeline d'évaluation pour RAGE.
+Pipeline d'évaluation pour Longa.
 
 Ce script :
 1. Charge le golden dataset
@@ -19,36 +19,48 @@ from pathlib import Path
 
 import pandas as pd
 from dotenv import load_dotenv
+from langchain_openai import ChatOpenAI
 
 load_dotenv()
 
+GROQ_API_KEY  = os.getenv("GROQ_API_KEY")
+GROQ_BASE_URL = "https://api.groq.com/openai/v1"
 
-#Chargement de la chaîne RAG
-def load_rag_chain(faiss_index_path: str, k: int = 3, repo_id: str = "meta-llama/Llama-3.1-8B-Instruct"):
+LLM_MODEL   = "openai/gpt-oss-120b" 
+JUDGE_MODEL = "openai/gpt-oss-120b"      
+
+EMBEDDING_MODEL = "sentence-transformers/all-mpnet-base-v2"
+
+
+def make_llm(model: str, temperature: float, max_tokens: int) -> ChatOpenAI:
+    if not GROQ_API_KEY:
+        raise RuntimeError("GROQ_API_KEY manquante dans le .env")
+    return ChatOpenAI(
+        model=model,
+        base_url=GROQ_BASE_URL,
+        api_key=GROQ_API_KEY,
+        temperature=temperature,
+        max_tokens=max_tokens,
+        max_retries=5,
+    )
+
+
+# 1. Chargement de la chaîne RAG
+def load_rag_chain(faiss_index_path: str, k: int = 3):
     """Recharge la chaîne RAG à partir d'un index FAISS déjà construit.
 
     Séparé de la construction de l'index pour pouvoir évaluer sans
     re-vectoriser à chaque run.
     """
     from langchain_community.vectorstores import FAISS
-    from langchain_huggingface import HuggingFaceEmbeddings, HuggingFaceEndpoint, ChatHuggingFace
+    from langchain_huggingface import HuggingFaceEmbeddings
     from langchain_core.prompts import PromptTemplate
     from langchain_classic.chains import RetrievalQA
 
-    embeddings = HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
+    embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
     db = FAISS.load_local(faiss_index_path, embeddings, allow_dangerous_deserialization=True)
 
-    hf_token = os.getenv("HUGGINGFACEHUB_API_TOKEN")
-
-    llm = HuggingFaceEndpoint(
-        repo_id="meta-llama/Llama-3.1-8B-Instruct",
-        provider="featherless-ai",
-        task="conversational",
-        huggingfacehub_api_token=hf_token,
-        temperature=0.2,
-        max_new_tokens=512,
-    )
-    chat_llm = ChatHuggingFace(llm=llm)
+    chat_llm = make_llm(LLM_MODEL, temperature=0.2, max_tokens=1024)
 
     prompt_template = """Tu es Longa, l'assistant professionnel de Loïc NGASSA.
 Ta mission est de répondre aux questions de recruteurs concernant
@@ -89,7 +101,7 @@ maîtrisée.
 Lorsque c'est pertinent, indique le projet ou l'expérience
 à l'origine de l'information.
 Tu dois toujours privilégier la précision à la quantité.
-Tu réponds en français sauf si le recruteur utilise une autre langue..
+Tu réponds en français sauf si le recruteur utilise une autre langue.
 
 Contexte : {context}
 
@@ -99,14 +111,14 @@ Question : {question}"""
     qa_chain = RetrievalQA.from_chain_type(
         llm=chat_llm,
         chain_type="stuff",
-        retriever=db.as_retriever(search_type="mmr", search_kwargs={"k": 4, "fetch_k": 6}),
+        retriever=db.as_retriever(search_type="mmr", search_kwargs={"k": k, "fetch_k": k * 2}),
         return_source_documents=True,
         chain_type_kwargs={"prompt": prompt},
     )
     return qa_chain
 
 
-#Exécution du golden dataset à travers la chaîne
+# 2. Exécution du golden dataset à travers la chaîne
 @dataclass
 class EvalRow:
     question_id: str
@@ -145,42 +157,34 @@ def run_dataset(chain, dataset_path: str) -> list[EvalRow]:
     return rows
 
 
-
 # 3. Évaluation RAGAS
-
 def evaluate_with_ragas(rows: list[EvalRow]) -> pd.DataFrame:
     """Calcule faithfulness, answer_relevancy, context_precision, context_recall.
 
     faithfulness        : la réponse est-elle fidèle au contexte récupéré ?
-    answer_relevancy     : la réponse répond-elle vraiment à la question posée ?
-    context_precision    : les passages récupérés sont-ils pertinents (peu de bruit) ?
-    context_recall       : le contexte récupéré couvre-t-il ce qu'il faut pour répondre ?
+    answer_relevancy    : la réponse répond-elle vraiment à la question posée ?
+    context_precision   : les passages récupérés sont-ils pertinents (peu de bruit) ?
+    context_recall      : le contexte récupéré couvre-t-il ce qu'il faut pour répondre ?
     """
     from datasets import Dataset
     from ragas import evaluate
     from ragas.metrics import faithfulness, answer_relevancy, context_precision, context_recall
-    from langchain_huggingface import HuggingFaceEndpoint, ChatHuggingFace, HuggingFaceEmbeddings
     from ragas.llms import LangchainLLMWrapper
     from ragas.embeddings import LangchainEmbeddingsWrapper
+    from ragas.run_config import RunConfig
+    from langchain_huggingface import HuggingFaceEmbeddings
 
-    hf_token = os.getenv("HUGGINGFACEHUB_API_TOKEN")
-
-    # LLM juge : même modèle que l'app principale
-    judge_llm = HuggingFaceEndpoint(
-        repo_id="meta-llama/Llama-3.1-8B-Instruct",
-        provider="featherless-ai",
-        task="conversational",
-        huggingfacehub_api_token=hf_token,
-        temperature=0.0,
-        max_new_tokens=512,
-    )
-    judge_chat = ChatHuggingFace(llm=judge_llm)
-    ragas_llm = LangchainLLMWrapper(judge_chat)
+    # LLM juge : température 0 et plus de tokens (RAGAS attend des sorties JSON)
+    judge_llm = make_llm(JUDGE_MODEL, temperature=0.0, max_tokens=2048)
+    ragas_llm = LangchainLLMWrapper(judge_llm)
 
     # Embeddings juge : même modèle que l'index FAISS
     ragas_embeddings = LangchainEmbeddingsWrapper(
-        HuggingFaceEmbeddings(model_name="sentence-transformers/all-mpnet-base-v2")
+        HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
     )
+
+    # Groq n'accepte pas n > 1 : on force une seule question générée par réponse
+    answer_relevancy.strictness = 1
 
     eval_data = {
         "question": [r.question for r in rows],
@@ -195,14 +199,14 @@ def evaluate_with_ragas(rows: list[EvalRow]) -> pd.DataFrame:
         metrics=[faithfulness, answer_relevancy, context_precision, context_recall],
         llm=ragas_llm,
         embeddings=ragas_embeddings,
+        run_config=RunConfig(max_workers=2, timeout=180, max_retries=6),  # évite les 429
     )
     df = result.to_pandas()
     df.insert(0, "question_id", [r.question_id for r in rows])
     return df
 
 
-
-# Rapport
+# 4. Rapport
 def save_report(df: pd.DataFrame, output_dir: str, run_label: str = ""):
     Path(output_dir).mkdir(parents=True, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
@@ -242,10 +246,6 @@ def main():
     parser.add_argument("--output-dir", default="./eval_results")
     parser.add_argument("--run-label", default="")
     args = parser.parse_args()
-
-    if not os.getenv("HUGGINGFACEHUB_API_TOKEN"):
-        print("ERREUR : HUGGINGFACEHUB_API_TOKEN n'est pas défini (fichier .env).")
-        sys.exit(1)
 
     chain = load_rag_chain(args.faiss_index, k=args.k)
     rows = run_dataset(chain, args.dataset)
