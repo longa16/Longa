@@ -4,7 +4,7 @@
 
 ---
 
-## Architecture
+## Système design
 
 
 ![System design de Longa](longa_system_design.svg)
@@ -15,7 +15,7 @@ data/                        ← Documents PDF sources
     ↓  ingest.py
 faiss_index/                 ← Base vectorielle persistante 
     ↓  src/backend.py
-Llama-3.1-8B (featherless)   ← LLM de génération via HuggingFace Inference API
+openai/gpt-oss-120b  ← LLM de génération via HuggingFace Inference API
     ↓  src/ui.py
 Interface Streamlit           ← Chat interactif avec affichage des sources
 ```
