@@ -6,6 +6,10 @@
 
 ## Architecture
 
+
+![System design de Longa](longa_system_design.svg)
+
+
 ```
 data/                        ← Documents PDF sources
     ↓  ingest.py
