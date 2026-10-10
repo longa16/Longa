@@ -26,11 +26,8 @@ load_dotenv()
 GROQ_API_KEY  = os.getenv("GROQ_API_KEY")
 GROQ_BASE_URL = "https://api.groq.com/openai/v1"
 
-LLM_MODEL   = "openai/gpt-oss-120b" 
-JUDGE_MODEL = "openai/gpt-oss-120b"      
-
+JUDGE_MODEL = "openai/gpt-oss-120b"
 EMBEDDING_MODEL = "sentence-transformers/all-mpnet-base-v2"
-
 
 def make_llm(model: str, temperature: float, max_tokens: int) -> ChatOpenAI:
     if not GROQ_API_KEY:
@@ -44,78 +41,16 @@ def make_llm(model: str, temperature: float, max_tokens: int) -> ChatOpenAI:
         max_retries=5,
     )
 
+import sys
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from src import backend
 
-# 1. Chargement de la chaîne RAG
-def load_rag_chain(faiss_index_path: str, k: int = 3):
-    """Recharge la chaîne RAG à partir d'un index FAISS déjà construit.
-
-    Séparé de la construction de l'index pour pouvoir évaluer sans
-    re-vectoriser à chaque run.
-    """
-    from langchain_community.vectorstores import FAISS
-    from langchain_huggingface import HuggingFaceEmbeddings
-    from langchain_core.prompts import PromptTemplate
-    from langchain_classic.chains import RetrievalQA
-
-    embeddings = HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
-    db = FAISS.load_local(faiss_index_path, embeddings, allow_dangerous_deserialization=True)
-
-    chat_llm = make_llm(LLM_MODEL, temperature=0.2, max_tokens=1024)
-
-    prompt_template = """Tu es Longa, l'assistant professionnel de Loïc NGASSA.
-Ta mission est de répondre aux questions de recruteurs concernant
-le parcours, les compétences, les expériences, les projets,
-la formation et les réalisations de Loïc NGASSA.
-
-RÈGLE PRINCIPALE :
-Tu dois répondre uniquement à partir des informations présentes
-dans le contexte documentaire fourni.
-Tu ne dois jamais inventer, supposer, extrapoler ou déduire une
-information personnelle concernant Loïc NGASSA.
-Si une information n'est pas présente dans le contexte fourni,
-dis-le explicitement.
-
-N'utilise jamais des formulations telles que :
-- "probablement"
-- "on peut supposer"
-- "il semble"
-- "cela suggère"
-- "il a probablement"
-
-pour compléter une information absente.
-Si la question porte sur une information absente des documents,
-réponds :
-"Je ne dispose pas de cette information dans les documents qui
-m'ont été fournis et je préfère ne pas spéculer."
-
-Lorsque plusieurs informations pertinentes sont disponibles,
-synthétise-les clairement sans ajouter d'informations externes.
-
-Pour les compétences, distingue :
-- compétences explicitement mentionnées ;
-- technologies explicitement utilisées ;
-- expériences/projets ayant permis de développer ces compétences.
-
-Ne transforme pas automatiquement une expérience en compétence
-maîtrisée.
-Lorsque c'est pertinent, indique le projet ou l'expérience
-à l'origine de l'information.
-Tu dois toujours privilégier la précision à la quantité.
-Tu réponds en français sauf si le recruteur utilise une autre langue.
-
-Contexte : {context}
-
-Question : {question}"""
-    prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
-
-    qa_chain = RetrievalQA.from_chain_type(
-        llm=chat_llm,
-        chain_type="stuff",
-        retriever=db.as_retriever(search_type="mmr", search_kwargs={"k": k, "fetch_k": k * 2}),
-        return_source_documents=True,
-        chain_type_kwargs={"prompt": prompt},
-    )
-    return qa_chain
+def load_evaluation_rag_chain(faiss_index_path: str):
+    """Recharge la chaîne RAG depuis le backend pour l'évaluation."""
+    backend.FAISS_INDEX = faiss_index_path
+    
+    # On utilise la chaîne hybride (BM25 + Reranker + Vector) de production
+    return backend.load_rag_chain()
 
 
 # 2. Exécution du golden dataset à travers la chaîne
@@ -247,7 +182,7 @@ def main():
     parser.add_argument("--run-label", default="")
     args = parser.parse_args()
 
-    chain = load_rag_chain(args.faiss_index, k=args.k)
+    chain = load_evaluation_rag_chain(args.faiss_index)
     rows = run_dataset(chain, args.dataset)
 
     if not rows:
