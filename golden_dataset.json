@@ -82,6 +82,357 @@
       "question": "En quoi le profil de Loïc correspond-il exactement à ce qu'une entreprise Tech recherche aujourd'hui ?",
       "ground_truth": "Loïc possède à la fois un bagage théorique solide (cycle ingénieur INSA) et une pratique avancée des algorithmes d'IA (visible dans son rapport PFE). Il est taillé pour affronter les enjeux métiers nécessitant rigueur, curiosité technique et flexibilité.",
       "expected_source_page": null
+    },
+    {
+      "id": "q012",
+      "type": "factuelle_simple",
+      "question": "Quelle est l'adresse email de Loïc ?",
+      "ground_truth": "L'adresse email de Loïc est yannngassa35@gmail.com.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q013",
+      "type": "numerique",
+      "question": "Quel est son numéro de téléphone ?",
+      "ground_truth": "Son numéro de téléphone est le 0621184218.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q014",
+      "type": "factuelle_simple",
+      "question": "Sur quelles plateformes Loïc possède-t-il des profils en ligne mentionnés dans son CV ?",
+      "ground_truth": "Il mentionne des liens vers son LinkedIn, son portfolio et son GitHub.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q015",
+      "type": "factuelle_simple",
+      "question": "Quel domaine de l'intelligence artificielle passionne particulièrement Loïc pour la mise en production ?",
+      "ground_truth": "Il est passionné par l'inférence et la mise en production de modèles de Computer Vision et d'IA générative.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q016",
+      "type": "numerique",
+      "question": "Quel temps de traitement par image Loïc a-t-il atteint pour la segmentation YOLO sur flux vidéo RTSP ?",
+      "ground_truth": "Il a atteint un temps de 50 à 200 ms par image sur GPU.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q017",
+      "type": "factuelle_simple",
+      "question": "Quel outil Loïc utilise-t-il pour évaluer systématiquement les systèmes RAG ?",
+      "ground_truth": "Il utilise l'outil RAGAS.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q018",
+      "type": "analyse_motivation",
+      "question": "Que recherche Loïc comme premier poste ?",
+      "ground_truth": "Il recherche son premier poste d'ingénieur IA/ML pour concevoir, optimiser et déployer des produits IA de bout en bout.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q019",
+      "type": "factuelle_multiple",
+      "question": "Quels sont les cours principaux suivis par Loïc à l'INSA Hauts-de-France ?",
+      "ground_truth": "Il a suivi des cours de machine learning, statistique et probabilité, algèbre linéaire, et big data.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q020",
+      "type": "factuelle_simple",
+      "question": "Dans quelle ville a-t-il effectué sa classe préparatoire aux écoles d'ingénieurs ?",
+      "ground_truth": "Il a effectué sa classe préparatoire à Douala, à l'Université catholique St Jérôme.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q021",
+      "type": "factuelle_simple",
+      "question": "Dans quelle ville Loïc a-t-il travaillé pour EA le Sextant ?",
+      "ground_truth": "Il a travaillé à Lille pour EA le Sextant.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q022",
+      "type": "factuelle_simple",
+      "question": "Quel poste Loïc a-t-il occupé chez EA le Sextant ?",
+      "ground_truth": "Il y a occupé le poste d'Assistant Data Scientist.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q023",
+      "type": "numerique",
+      "question": "Quelle réduction de latence a-t-il obtenue sur la reconnaissance faciale chez EA le Sextant ?",
+      "ground_truth": "Il a obtenu une réduction de 30 % de la latence de traitement.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q024",
+      "type": "factuelle_multiple",
+      "question": "Quelles technologies de NLP a-t-il utilisées chez EA le Sextant ?",
+      "ground_truth": "Il a utilisé des Transformers et de l'OCR pour l'automatisation du traitement documentaire.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q025",
+      "type": "factuelle_simple",
+      "question": "Où s'est déroulé le stage de fin d'études de Loïc (projet CIMES) ?",
+      "ground_truth": "Le stage a eu lieu à Famars, en France.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q026",
+      "type": "factuelle_simple",
+      "question": "Qui était le tuteur académique de Loïc pour son PFE ?",
+      "ground_truth": "Son tuteur académique était M. Robert TOMCZAK.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q027",
+      "type": "factuelle_simple",
+      "question": "Qui était son tuteur en entreprise lors du stage chez CIMES ?",
+      "ground_truth": "Son tuteur en entreprise était M. Stéphane VANHAESBROUCKE.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q028",
+      "type": "numerique",
+      "question": "Quelle est la date prévue de la soutenance pour son PFE ?",
+      "ground_truth": "La soutenance est prévue le 08 septembre 2026.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q029",
+      "type": "factuelle_simple",
+      "question": "Quel est le but principal de l'outil développé chez CIMES ?",
+      "ground_truth": "Le développement d'un outil professionnel d'analyse granulométrique par vision artificielle pour le contrôle qualité industriel du ballast ferroviaire.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q030",
+      "type": "factuelle_simple",
+      "question": "Quel langage de programmation a été principalement utilisé pour l'application CIMES ?",
+      "ground_truth": "L'application a été développée en Python.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q031",
+      "type": "factuelle_multiple",
+      "question": "Quel modèle de réseau de neurones convolutif a été utilisé pour la segmentation d'instances chez CIMES ?",
+      "ground_truth": "Le modèle YOLO a été utilisé pour la segmentation d'instances.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q032",
+      "type": "factuelle_simple",
+      "question": "Quelle norme est mentionnée dans le rapport PFE concernant le tamisage industriel ?",
+      "ground_truth": "Le système a été corrélé aux standards normatifs de tamisage NF EN 13450.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q033",
+      "type": "factuelle_simple",
+      "question": "Quel type de licence a été mis en place pour l'outil CIMES ?",
+      "ground_truth": "Un système de licence cryptographique RSA-PSS hors-ligne a été mis en place.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q034",
+      "type": "factuelle_simple",
+      "question": "Quel outil a été utilisé pour le packaging de l'application CIMES ?",
+      "ground_truth": "PyInstaller a été utilisé pour le packaging.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q035",
+      "type": "synthese_rapport",
+      "question": "Pourquoi l'application CIMES a-t-elle été refactorisée selon le document RAG ?",
+      "ground_truth": "L'application était initialement monolithique, ce qui limitait sa maintenance, la séparation des responsabilités et la gestion des erreurs.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q036",
+      "type": "factuelle_multiple",
+      "question": "Quelles sont les trois couches de l'architecture logicielle mise en place chez CIMES ?",
+      "ground_truth": "Le code a été découpé en trois couches : Core (logique métier), UI (interface) et Utils (services transverses).",
+      "expected_source_page": null
+    },
+    {
+      "id": "q037",
+      "type": "factuelle_simple",
+      "question": "Quel principe architectural Loïc met-il en avant dans le rapport PFE ?",
+      "ground_truth": "La séparation des préoccupations (Model-View), afin d'isoler les composants et faciliter les tests.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q038",
+      "type": "absence_information",
+      "question": "Combien de soeurs a Loïc ?",
+      "ground_truth": "Les documents ne fournissent aucune information sur les frères et soeurs de Loïc.",
+      "expected_source_page": null,
+      "note": "Anti-hallucination test"
+    },
+    {
+      "id": "q039",
+      "type": "factuelle_simple",
+      "question": "Sur quel type de flux vidéo l'outil de CIMES fonctionnait-il en temps réel ?",
+      "ground_truth": "Sur un flux vidéo RTSP.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q040",
+      "type": "absence_information",
+      "question": "Quelle est l'adresse exacte du domicile de Loïc ?",
+      "ground_truth": "Aucune information n'est donnée concernant son adresse résidentielle précise (seulement la localisation d'études ou stage).",
+      "expected_source_page": null
+    },
+    {
+      "id": "q041",
+      "type": "transversale",
+      "question": "Quels sont les bibliothèques et frameworks Computer Vision que Loïc a utilisés dans ses projets ?",
+      "ground_truth": "Il a utilisé OpenCV, PyTorch et YOLO pour ses projets de Computer Vision, que ce soit chez EA le Sextant ou CIMES.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q042",
+      "type": "scenario_recrutement",
+      "question": "Comment Loïc aborde-t-il l'optimisation en production ?",
+      "ground_truth": "Il accorde autant d'importance à la performance en production (latence, débit, gestion GPU, packaging, déploiement) qu'à la qualité brute des modèles.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q043",
+      "type": "factuelle_simple",
+      "question": "Quel matériau est analysé par l'outil de vision développé pour CIMES ?",
+      "ground_truth": "C'est du ballast ferroviaire.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q044",
+      "type": "factuelle_simple",
+      "question": "Dans le PFE, Loïc mentionne d'autres personnes qui encadrent son entreprise, qui est Tarek Berrached ?",
+      "ground_truth": "Tarek Berrached est une personne travaillant dans son entreprise d'accueil qui lui a prodigué un encadrement tout au long de son stage, comme cité dans les remerciements.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q045",
+      "type": "factuelle_simple",
+      "question": "Qu'est-ce que l'équipe CAP-TRACK chez CIMES ?",
+      "ground_truth": "C'est l'équipe chargée du développement de l'outil de granulométrie par vision artificielle dans laquelle Loïc a travaillé.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q046",
+      "type": "synthese_multi_passages",
+      "question": "Quelles sont les villes importantes liées au parcours de Loïc en France ?",
+      "ground_truth": "Lille pour l'expérience EA le Sextant, Valenciennes pour les études à l'INSA, et Famars pour le stage chez CIMES.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q047",
+      "type": "absence_information",
+      "question": "Quel était le budget du projet de granulométrie chez CIMES ?",
+      "ground_truth": "L'information budgétaire ou le coût du projet n'est pas mentionné dans les documents.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q048",
+      "type": "factuelle_simple",
+      "question": "Qu'a apporté la refactorisation de l'outil monolithique initial au sein de CIMES ?",
+      "ground_truth": "Elle a permis une meilleure flexibilité, une gestion des erreurs améliorée, la séparation des responsabilités et a facilité les tests.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q049",
+      "type": "factuelle_simple",
+      "question": "En quelle année scolaire a-t-il commencé son diplôme d'ingénieur ?",
+      "ground_truth": "Il a commencé son diplôme d'ingénieur en 2023.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q050",
+      "type": "factuelle_simple",
+      "question": "Quelles années couvre son parcours à l'Université catholique St Jérôme de Douala ?",
+      "ground_truth": "Le parcours couvre la période de 2021 à 2023.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q051",
+      "type": "factuelle_simple",
+      "question": "Outre M. Tarek Berrached, qui d'autre est remercié pour ses conseils techniques dans le rapport de PFE de Loïc ?",
+      "ground_truth": "Il remercie AREZKI BOUKHALFA pour son aide précieuse sur le développement de la solution.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q052",
+      "type": "numerique",
+      "question": "Combien de mois a duré son emploi chez EA Le Sextant ?",
+      "ground_truth": "Environ 6 mois (d'avril 2025 à septembre 2025).",
+      "expected_source_page": null
+    },
+    {
+      "id": "q053",
+      "type": "absence_information",
+      "question": "Quel est le plat préféré de Loïc ?",
+      "ground_truth": "Les documents professionnels ne parlent pas des goûts culinaires de Loïc.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q054",
+      "type": "factuelle_simple",
+      "question": "Avec quoi l'outil de vision industrielle est-il packagé ?",
+      "ground_truth": "PyInstaller, afin d'avoir une application exécutable autonome.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q055",
+      "type": "factuelle_simple",
+      "question": "Quel domaine est abordé dans le pipeline qui emploie OpenCV et Pytorch chez EA le Sextant ?",
+      "ground_truth": "L'amélioration et la mise en production d'un système de Computer Vision Edge AI.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q056",
+      "type": "transversale",
+      "question": "Loïc possède-t-il une expérience avec des LLM ou l'IA Générative ?",
+      "ground_truth": "Oui, il a travaillé avec des LLM pour des systèmes de RAG et du NLP par Transformers pour de l'OCR.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q057",
+      "type": "factuelle_simple",
+      "question": "L'outil développé lors du stage CIMES nécessite-t-il obligatoirement une connexion internet ?",
+      "ground_truth": "Non, l'outil a été conçu pour être complètement déployable et utilisable hors-ligne.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q058",
+      "type": "factuelle_simple",
+      "question": "Où se situe précisément l'entreprise CIMES (adresse complète) ?",
+      "ground_truth": "Elle se situe au 180 rue Joseph-Louis-Lagrange 59300 Famars, France.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q059",
+      "type": "factuelle_simple",
+      "question": "Pourquoi la séparation View / Model est-elle mentionnée dans le projet CIMES ?",
+      "ground_truth": "C'est un principe de clean code utilisé dans l'étape de refactoring pour mieux isoler et structurer l'outil.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q060",
+      "type": "analyse_motivation",
+      "question": "Pourquoi le RAG est-il un point central du portfolio ou du parcours de Loïc ?",
+      "ground_truth": "Il s'intéresse à l'industrialisation des modèles. Créer des systèmes RAG (Retrieval Augmented Generation) et les évaluer méthodiquement montre sa capacité à lier des données spécifiques aux grands modèles de langage pour un usage concret.",
+      "expected_source_page": null
+    },
+    {
+      "id": "q061",
+      "type": "factuelle_simple",
+      "question": "En plus de la segmentation par YOLO, quelle chaîne a été cruciale pour l'implémentation de la métrologie optique chez CIMES ?",
+      "ground_truth": "Une chaîne de calibration caméra rigoureuse complète l'estimation dimensionnelle du pipeline YOLO.",
+      "expected_source_page": null
     }
   ]
 }

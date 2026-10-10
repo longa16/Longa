@@ -1,21 +1,19 @@
+import logging
 import os
 import warnings
 warnings.filterwarnings("ignore", message=".*langchain-community.*", category=DeprecationWarning)
 
-from langchain_huggingface import HuggingFaceEmbeddings
-from langchain_openai import ChatOpenAI
 from langchain_core.prompts import PromptTemplate
 from langchain_community.vectorstores import FAISS
+from langchain_google_genai import GoogleGenerativeAIEmbeddings, ChatGoogleGenerativeAI
 from langchain_classic.chains import RetrievalQA
 from dotenv import load_dotenv
 
 load_dotenv()
 
-GROQ_API_KEY = os.getenv("GROQ_API_KEY")
+GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
-EMBEDDING_MODEL = "sentence-transformers/all-mpnet-base-v2"
-LLM_MODEL       = "openai/gpt-oss-120b"
-GROQ_BASE_URL   = "https://api.groq.com/openai/v1"
+LLM_MODEL       = "gemini-3.8-flash"
 FAISS_INDEX     = "faiss_index"
 
 
@@ -25,22 +23,20 @@ import streamlit as st
 def get_embeddings_model():
     """Charge le modèle d'embedding une seule fois et le met en cache."""
     print("Mise en cache du modèle d'embedding...")
-    return HuggingFaceEmbeddings(model_name=EMBEDDING_MODEL)
+    return GoogleGenerativeAIEmbeddings(model="models/gemini-embedding-001")
 
 def load_rag_chain():
     """Charge l'index FAISS et construit la chaîne RAG."""
-    if not GROQ_API_KEY:
-        raise RuntimeError("GROQ_API_KEY manquante dans le .env")
+    if not GOOGLE_API_KEY:
+        raise RuntimeError("GOOGLE_API_KEY manquante dans le .env")
 
     print(f"Chargement du modèle : {LLM_MODEL}")
 
     embeddings = get_embeddings_model()
     db = FAISS.load_local(FAISS_INDEX, embeddings, allow_dangerous_deserialization=True)
 
-    chat_llm = ChatOpenAI(
+    chat_llm = ChatGoogleGenerativeAI(
         model=LLM_MODEL,
-        base_url=GROQ_BASE_URL,
-        api_key=GROQ_API_KEY,
         temperature=0.2,
         max_tokens=1024,
         max_retries=3,
