@@ -103,9 +103,9 @@ text{font-family:Helvetica,Arial,sans-serif;fill:#1f1f1f}
 <text class="hd" x="562.5" y="253" text-anchor="middle" dominant-baseline="central">LLM Generation Layer</text>
 <rect x="548" y="270" width="130" height="122" rx="12" fill="#F4F9FF" stroke="#3A76C4" stroke-width="1.5"/>
 <rect class="bl" x="556" y="282" width="114" height="50" rx="6"/>
-<text class="tx" x="613.0" y="294.0" text-anchor="middle" dominant-baseline="central">LLM</text>
-<text class="sm" x="613.0" y="307.0" text-anchor="middle" dominant-baseline="central">openai/gpt-oss-120b</text>
-<text class="sm" x="613.0" y="320.0" text-anchor="middle" dominant-baseline="central">via Groq</text>
+<text class="tx" x="613.0" y="294.0" text-anchor="middle" dominant-baseline="central">Gemini 3.8 Flash</text>
+<text class="sm" x="613.0" y="307.0" text-anchor="middle" dominant-baseline="central">via Google API</text>
+<text class="sm" x="613.0" y="320.0" text-anchor="middle" dominant-baseline="central">temperature 0.2</text>
 <rect class="bl" x="556" y="342" width="114" height="42" rx="6"/>
 <text class="tx" x="613.0" y="356.5" text-anchor="middle" dominant-baseline="central">Prompt template</text>
 <text class="sm" x="613.0" y="369.5" text-anchor="middle" dominant-baseline="central">grounding rules</text>
@@ -114,26 +114,26 @@ text{font-family:Helvetica,Arial,sans-serif;fill:#1f1f1f}
 <text class="tx" x="491.0" y="343.0" text-anchor="middle" dominant-baseline="central">generator +</text>
 <text class="tx" x="491.0" y="356.0" text-anchor="middle" dominant-baseline="central">sources</text>
 <path class="sa" d="M546,343 H535"/>
-<text x="449" y="427" dominant-baseline="central" style="font-size:15px;font-weight:700">Groq</text>
+<text x="449" y="427" dominant-baseline="central" style="font-size:15px;font-weight:700">Google GenAI</text>
 <path class="da" d="M713,318 H692"/>
 <path class="da" d="M433,342 H412"/>
 <rect x="715" y="235" width="325" height="200" rx="14" fill="#E3EEFB" stroke="#777" stroke-width="1" stroke-dasharray="5 4"/>
-<text class="hd" x="877.5" y="253" text-anchor="middle" dominant-baseline="central">Retrieval Pipeline</text>
+<text class="hd" x="877.5" y="253" text-anchor="middle" dominant-baseline="central">Hybrid Retrieval Pipeline</text>
 <rect class="bl" x="730" y="322" width="96" height="66" rx="6"/>
-<text class="tx" x="778.0" y="342.0" text-anchor="middle" dominant-baseline="central">Context Builder</text>
-<text class="sm" x="778.0" y="355.0" text-anchor="middle" dominant-baseline="central">(Top-6 chunks</text>
-<text class="sm" x="778.0" y="368.0" text-anchor="middle" dominant-baseline="central">with sources)</text>
-<rect class="pk" x="846" y="282" width="92" height="34" rx="6"/>
-<text class="tx" x="892.0" y="292.5" text-anchor="middle" dominant-baseline="central">Re-ranking</text>
-<text class="sm" x="892.0" y="305.5" text-anchor="middle" dominant-baseline="central">(planned)</text>
+<text class="tx" x="778.0" y="342.0" text-anchor="middle" dominant-baseline="central">Cross-Encoder</text>
+<text class="sm" x="778.0" y="355.0" text-anchor="middle" dominant-baseline="central">Reranking</text>
+<text class="sm" x="778.0" y="368.0" text-anchor="middle" dominant-baseline="central">(Top-6 chunks)</text>
+<rect class="bl" x="846" y="282" width="92" height="34" rx="6"/>
+<text class="tx" x="892.0" y="292.5" text-anchor="middle" dominant-baseline="central">BM25 Retrieval</text>
+<text class="sm" x="892.0" y="305.5" text-anchor="middle" dominant-baseline="central">Lexical (k=10)</text>
 <rect class="bl" x="956" y="272" width="76" height="50" rx="6"/>
 <text class="tx" x="994.0" y="284.0" text-anchor="middle" dominant-baseline="central">Query</text>
 <text class="tx" x="994.0" y="297.0" text-anchor="middle" dominant-baseline="central">encoder</text>
-<text class="sm" x="994.0" y="310.0" text-anchor="middle" dominant-baseline="central">mpnet 768d</text>
+<text class="sm" x="994.0" y="310.0" text-anchor="middle" dominant-baseline="central">gemini-emb.</text>
 <rect class="bl" x="956" y="338" width="76" height="52" rx="6"/>
 <text class="tx" x="994.0" y="351.0" text-anchor="middle" dominant-baseline="central">FAISS MMR</text>
-<text class="sm" x="994.0" y="364.0" text-anchor="middle" dominant-baseline="central">k=6</text>
-<text class="sm" x="994.0" y="377.0" text-anchor="middle" dominant-baseline="central">fetch 12</text>
+<text class="sm" x="994.0" y="364.0" text-anchor="middle" dominant-baseline="central">Semantic</text>
+<text class="sm" x="994.0" y="377.0" text-anchor="middle" dominant-baseline="central">k=10, fetch=20</text>
 <path class="sa" d="M994,324 V336"/>
 <path class="sa" d="M954,362 H828"/>
 <path class="da" d="M846,299 H836 V335 H828"/>
